@@ -123,7 +123,6 @@ jetPuppiTable = simpleCandidateFlatTableProducer.clone(
         UParTAK4RegPtRawCorr = Var("?abs(eta())<2.5?bDiscriminator('pfUnifiedParticleTransformerAK4JetTags:ptcorr'):bDiscriminator('pfParticleNetFromMiniAODAK4CHSForwardJetTags:ptcorr')",float,precision=10,doc="UnifiedParT universal flavor-aware visible pT regression (no neutrinos), correction relative to raw jet pT"),
         UParTAK4RegPtRawCorrNeutrino = Var("?abs(eta())<2.5?bDiscriminator('pfUnifiedParticleTransformerAK4JetTags:ptnu'):bDiscriminator('pfParticleNetFromMiniAODAK4CHSForwardJetTags:ptnu')",float,precision=10,doc="UnifiedParT universal flavor-aware pT regression neutrino correction, relative to visible. To apply full regression, multiply raw jet pT by both UParTAK4RegPtRawCorr and UParTAK4RegPtRawCorrNeutrino."),
         UParTAK4RegPtRawRes = Var("?abs(eta())<2.5?0.5*(bDiscriminator('pfUnifiedParticleTransformerAK4JetTags:ptreshigh')-bDiscriminator('pfUnifiedParticleTransformerAK4JetTags:ptreslow')):0.5*(bDiscriminator('pfParticleNetFromMiniAODAK4CHSForwardJetTags:ptreshigh')-bDiscriminator('pfParticleNetFromMiniAODAK4CHSForwardJetTags:ptreslow'))",float,precision=10,doc="UnifiedParT universal flavor-aware jet pT resolution estimator, (q84 - q16)/2"),
-n
         jetId = Var("userInt('tightId')*2+4*userInt('tightIdLepVeto')", "uint8",doc="Jet ID flag: bit2 is tight, bit3 is tightLepVeto"),
         hfsigmaEtaEta = Var("userFloat('hfsigmaEtaEta')",float,doc="sigmaEtaEta for HF jets (noise discriminating variable)",precision=10),
         hfsigmaPhiPhi = Var("userFloat('hfsigmaPhiPhi')",float,doc="sigmaPhiPhi for HF jets (noise discriminating variable)",precision=10),
@@ -210,7 +209,7 @@ def nanoAOD_addDeepInfoAK4(process,addParticleNet,addRobustParTAK4=False,addUnif
 
 nanoAOD_addDeepInfoAK4_switch = cms.PSet(
     nanoAOD_addParticleNet_switch = cms.untracked.bool(False),
-    nanoAOD_addRobustParTAK4Tag_switch = cms.untracked.bool(False)
+    nanoAOD_addRobustParTAK4Tag_switch = cms.untracked.bool(False),
     nanoAOD_addUnifiedParTAK4Tag_switch = cms.untracked.bool(False)
 )
 

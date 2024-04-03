@@ -452,7 +452,7 @@ nanoAOD_addDeepInfoAK4CHS_switch = cms.PSet(
     nanoAOD_addDeepBTag_switch = cms.untracked.bool(False),
     nanoAOD_addDeepFlavourTag_switch = cms.untracked.bool(False),
     nanoAOD_addParticleNet_switch = cms.untracked.bool(False),
-    nanoAOD_addRobustParTAK4Tag_switch = cms.untracked.bool(False)
+    nanoAOD_addRobustParTAK4Tag_switch = cms.untracked.bool(False),
     nanoAOD_addUnifiedParTAK4Tag_switch = cms.untracked.bool(False)
 )
 

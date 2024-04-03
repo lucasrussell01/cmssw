@@ -51,7 +51,6 @@ namespace btagbtvdeep {
     commonCandidateToFeatures(
         c_pf, jet, track_info, isWeightedJet, drminpfcandsv, jetR, puppiw, lt_features, flip, distminpfcandsv);
 
-    lt_features.vtx_ass = vtx_ass_from_pfcand(*c_pf, pv_ass_quality, pv);
     lt_features.puppiw = puppiw;
 
     const auto& pseudo_track = (c_pf->bestTrack()) ? *c_pf->bestTrack() : reco::Track();

@@ -33,10 +33,6 @@ namespace btagbtvdeep {
       trackSip3dVal = -trackSip3dVal;
     }
 
-    float constituentWeight = 1.;
-    if (isWeightedJet)
-      constituentWeight = puppiw;
-
     lt_features.btagPf_trackEtaRel = catch_infs_and_bound(track_info.getTrackEtaRel(), 0, -5, 15);
     lt_features.btagPf_trackPtRel = catch_infs_and_bound(track_info.getTrackPtRel(), 0, -1, 4);
     lt_features.btagPf_trackPPar = catch_infs_and_bound(track_info.getTrackPPar(), 0, -1e5, 1e5);

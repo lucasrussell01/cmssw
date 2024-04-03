@@ -93,8 +93,8 @@ void UnifiedParticleTransformerAK4ONNXJetTagsProducer::fillDescriptions(edm::Con
   desc.add<std::vector<std::string>>("output_names", {"softmax"});
   desc.add<std::vector<std::string>>(
       "flav_names", std::vector<std::string>{"probb", "probbb", "problepb", "probc", "probs", "probu", "probd", "probg", "probele", "probmu",
-      'probtaup1h0p', 'probtaup1h1p', 'probtaup1h2p', 'probtaup3h0p', 'probtaup3h1p', 'probtaum1h0p', 'probtaum1h1p', 'probtaum1h2p', 'probtaum3h0p', 'probtaum3h1p',
-      'ptcorr', 'ptreshigh', 'ptreslow', 'ptnu', 'probemudata', 'probemumc', 'probdimudata', 'probdimumc', 'probmutaudata', 'probmutaumc',});
+      "probtaup1h0p", "probtaup1h1p", "probtaup1h2p", "probtaup3h0p", "probtaup3h1p", "probtaum1h0p", "probtaum1h1p", "probtaum1h2p", "probtaum3h0p", "probtaum3h1p",
+      "ptcorr", "ptreshigh", "ptreslow", "ptnu", "probemudata", "probemumc", "probdimudata", "probdimumc", "probmutaudata", "probmutaumc"});
 
   descriptions.add("pfUnifiedParticleTransformerAK4JetTags", desc);
 }
@@ -240,16 +240,16 @@ void UnifiedParticleTransformerAK4ONNXJetTagsProducer::make_inputs(btagbtvdeep::
     const auto& lt_features = features.lt_features.at(lt_n);
     ptr = &data_[kLostTracks][offset + lt_n * n_features_lt_];
     start = ptr;
-    *ptr = lt_features.trackEtaRel;
-    *(++ptr) = lt_features.trackPtRel;
-    *(++ptr) = lt_features.trackPPar;
-    *(++ptr) = lt_features.trackDeltaR;
-    *(++ptr) = lt_features.trackPParRatio;
-    *(++ptr) = lt_features.trackSip2dVal;
-    *(++ptr) = lt_features.trackSip2dSig;
-    *(++ptr) = lt_features.trackSip3dVal;
-    *(++ptr) = lt_features.trackSip3dSig;
-    *(++ptr) = lt_features.trackJetDistVal;
+    *ptr = lt_features.btagPf_trackEtaRel;
+    *(++ptr) = lt_features.btagPf_trackPtRel;
+    *(++ptr) = lt_features.btagPf_trackPPar;
+    *(++ptr) = lt_features.btagPf_trackDeltaR;
+    *(++ptr) = lt_features.btagPf_trackPParRatio;
+    *(++ptr) = lt_features.btagPf_trackSip2dVal;
+    *(++ptr) = lt_features.btagPf_trackSip2dSig;
+    *(++ptr) = lt_features.btagPf_trackSip3dVal;
+    *(++ptr) = lt_features.btagPf_trackSip3dSig;
+    *(++ptr) = lt_features.btagPf_trackJetDistVal;
     *(++ptr) = lt_features.drminsv;
     *(++ptr) = lt_features.charge;
     *(++ptr) = lt_features.puppiw;
@@ -318,13 +318,13 @@ void UnifiedParticleTransformerAK4ONNXJetTagsProducer::make_inputs(btagbtvdeep::
   // lt pairwise features (4-vectors) specific case requiring (pt,eta,phi,e)
   auto max_lt_N = std::min(features.lt_features.size(), (std::size_t)n_lt_);
   for (std::size_t lt_N = 0; lt_N < max_lt_N; lt_N++) {
-    const auto& npf_pairwise_features = features.lt_features.at(lt_N);
+    const auto& lt_pairwise_features = features.lt_features.at(lt_N);
     ptr = &data_[kLostTracks4Vec][offset + lt_N * n_pairwise_features_lt_];
     start = ptr;
-    *ptr = lt_features.pt;
-    *(++ptr) = lt_features.eta;
-    *(++ptr) = lt_features.phi;
-    *(++ptr) = lt_features.e;
+    *ptr = lt_pairwise_features.pt;
+    *(++ptr) = lt_pairwise_features.eta;
+    *(++ptr) = lt_pairwise_features.phi;
+    *(++ptr) = lt_pairwise_features.e;
 
     assert(start + n_pairwise_features_lt_ - 1 == ptr);
   }
