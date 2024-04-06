@@ -82,7 +82,7 @@ private:
 
   const edm::EDGetTokenT<edm::View<reco::Jet>> jet_token_;
   const edm::EDGetTokenT<VertexCollection> vtx_token_;
-  const edm::EDGetTokenT<edm::View<reco::Candidate>> lt_token_;
+  const edm::EDGetTokenT<pat::PackedCandidateCollection> lt_token_;
   const edm::EDGetTokenT<SVCollection> sv_token_;
   edm::EDGetTokenT<JetMatchMap> unsubjet_map_token_;
   edm::EDGetTokenT<edm::ValueMap<float>> puppi_value_map_token_;
@@ -109,7 +109,7 @@ UnifiedParticleTransformerAK4TagInfoProducer::UnifiedParticleTransformerAK4TagIn
       flip_(iConfig.getParameter<bool>("flip")),
       jet_token_(consumes<edm::View<reco::Jet>>(iConfig.getParameter<edm::InputTag>("jets"))),
       vtx_token_(consumes<VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
-      lt_token_(consumes<edm::View<reco::Candidate>>(iConfig.getParameter<edm::InputTag>("losttracks"))),
+      lt_token_(consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("losttracks"))),
       sv_token_(consumes<SVCollection>(iConfig.getParameter<edm::InputTag>("secondary_vertices"))),
       candidateToken_(consumes<edm::View<reco::Candidate>>(iConfig.getParameter<edm::InputTag>("candidates"))),
       track_builder_token_(
@@ -186,7 +186,7 @@ void UnifiedParticleTransformerAK4TagInfoProducer::produce(edm::Event& iEvent, c
     return;  // exit event
   }
 
-  edm::Handle<edm::View<reco::Candidate>> LTs;
+  edm::Handle<pat::PackedCandidateCollection> LTs;
   iEvent.getByToken(lt_token_, LTs);
 
   // reference to primary vertex
@@ -263,9 +263,9 @@ void UnifiedParticleTransformerAK4TagInfoProducer::produce(edm::Event& iEvent, c
 
       //Adding the lost tracks associated with the jets
       for (size_t i = 0; i < LTs->size(); ++i) {
-        auto cand = LTs->ptrAt(i);
-        if ((reco::deltaR(*cand, jet) < 0.2)) {
-	      const auto *PackedCandidate_ = dynamic_cast<const pat::PackedCandidate*>(&(*cand));
+        auto cand = LTs->at(i);
+        if ((reco::deltaR(cand, jet) < 0.2)) {
+	      const auto *PackedCandidate_ = dynamic_cast<const pat::PackedCandidate*>(&(cand));
 	      if(PackedCandidate_){
 	        if(PackedCandidate_->pt() < 1.0) continue; 
             auto& trackinfo = lt_trackinfos.emplace(i, track_builder).first->second;
@@ -289,9 +289,9 @@ void UnifiedParticleTransformerAK4TagInfoProducer::produce(edm::Event& iEvent, c
       features.lt_features.resize(lt_sorted.size());
 
       for (size_t i = 0; i < LTs->size(); ++i) {
-        auto cand = LTs->ptrAt(i);
-        if ((reco::deltaR(*cand, jet) < 0.2)) {
-	  const auto *PackedCandidate_ = dynamic_cast<const pat::PackedCandidate*>(&(*cand));
+        auto cand = LTs->at(i);
+        if ((reco::deltaR(cand, jet) < 0.2)) {
+	  const auto *PackedCandidate_ = dynamic_cast<const pat::PackedCandidate*>(&(cand));
 	  if(!PackedCandidate_) continue;
 	  if(PackedCandidate_->pt() < 1.0) continue; 
 
