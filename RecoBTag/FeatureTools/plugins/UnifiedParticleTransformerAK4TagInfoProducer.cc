@@ -103,7 +103,8 @@ private:
   const double max_jet_eta_;
 };
 
-UnifiedParticleTransformerAK4TagInfoProducer::UnifiedParticleTransformerAK4TagInfoProducer(const edm::ParameterSet& iConfig)
+UnifiedParticleTransformerAK4TagInfoProducer::UnifiedParticleTransformerAK4TagInfoProducer(
+    const edm::ParameterSet& iConfig)
     : jet_radius_(iConfig.getParameter<double>("jet_radius")),
       min_candidate_pt_(iConfig.getParameter<double>("min_candidate_pt")),
       flip_(iConfig.getParameter<bool>("flip")),
@@ -265,68 +266,71 @@ void UnifiedParticleTransformerAK4TagInfoProducer::produce(edm::Event& iEvent, c
       for (size_t i = 0; i < LTs->size(); ++i) {
         auto cand = LTs->at(i);
         if ((reco::deltaR(cand, jet) < 0.2)) {
-	      const auto *PackedCandidate_ = dynamic_cast<const pat::PackedCandidate*>(&(cand));
-	      if(PackedCandidate_){
-	        if(PackedCandidate_->pt() < 1.0) continue; 
+          const auto* PackedCandidate_ = dynamic_cast<const pat::PackedCandidate*>(&(cand));
+          if (PackedCandidate_) {
+            if (PackedCandidate_->pt() < 1.0)
+              continue;
             auto& trackinfo = lt_trackinfos.emplace(i, track_builder).first->second;
-            trackinfo.buildTrackInfo(PackedCandidate_,jet_dir, jet_ref_track_dir, pv);
+            trackinfo.buildTrackInfo(PackedCandidate_, jet_dir, jet_ref_track_dir, pv);
 
             lt_sorted.emplace_back(i,
-                                  trackinfo.getTrackSip2dSig(),
-                                  -btagbtvdeep::mindrsvpfcand(svs_unsorted, PackedCandidate_),
-                                  PackedCandidate_->pt() / jet.pt());
+                                   trackinfo.getTrackSip2dSig(),
+                                   -btagbtvdeep::mindrsvpfcand(svs_unsorted, PackedCandidate_),
+                                   PackedCandidate_->pt() / jet.pt());
           }
         }
       }
-      
+
       // sort lt collection
       std::sort(lt_sorted.begin(), lt_sorted.end(), btagbtvdeep::SortingClass<std::size_t>::compareByABCInv);
       std::vector<size_t> lt_sortedindices;
       lt_sortedindices = btagbtvdeep::invertSortingVector(lt_sorted);
 
-    // set right size to vectors
+      // set right size to vectors
       features.lt_features.clear();
       features.lt_features.resize(lt_sorted.size());
 
       for (size_t i = 0; i < LTs->size(); ++i) {
         auto cand = LTs->at(i);
         if ((reco::deltaR(cand, jet) < 0.2)) {
-	  const auto *PackedCandidate_ = dynamic_cast<const pat::PackedCandidate*>(&(cand));
-	  if(!PackedCandidate_) continue;
-	  if(PackedCandidate_->pt() < 1.0) continue; 
+          const auto* PackedCandidate_ = dynamic_cast<const pat::PackedCandidate*>(&(cand));
+          if (!PackedCandidate_)
+            continue;
+          if (PackedCandidate_->pt() < 1.0)
+            continue;
 
-	  //auto reco_cand = dynamic_cast<const reco::PFCandidate*>(cand);
-	  float puppiw = PackedCandidate_->puppiWeight();
-	  
-	  float drminpfcandsv = btagbtvdeep::mindrsvpfcand(svs_unsorted, PackedCandidate_);
-	  float distminpfcandsv = 0;
+          //auto reco_cand = dynamic_cast<const reco::PFCandidate*>(cand);
+          float puppiw = PackedCandidate_->puppiWeight();
 
-	  auto entry = lt_sortedindices.at(i);
-	  // get cached track info
-	  auto& trackinfo = lt_trackinfos.at(i);
-	  // get_ref to vector element
-	  auto& lt_features = features.lt_features.at(entry);
+          float drminpfcandsv = btagbtvdeep::mindrsvpfcand(svs_unsorted, PackedCandidate_);
+          float distminpfcandsv = 0;
 
-	  if (PackedCandidate_) {
-	    if (PackedCandidate_->hasTrackDetails()) {
-	      const reco::Track& PseudoTrack = PackedCandidate_->pseudoTrack();
-	      reco::TransientTrack transientTrack;
-	      transientTrack = track_builder->build(PseudoTrack);
-	      distminpfcandsv = btagbtvdeep::mindistsvpfcand(svs_unsorted, transientTrack);
-	    }
+          auto entry = lt_sortedindices.at(i);
+          // get cached track info
+          auto& trackinfo = lt_trackinfos.at(i);
+          // get_ref to vector element
+          auto& lt_features = features.lt_features.at(entry);
 
-	    btagbtvdeep::packedCandidateToFeatures(PackedCandidate_,
-						   jet,
-						   trackinfo,
-						   is_weighted_jet_,
-						   drminpfcandsv,
-						   static_cast<float>(jet_radius_),
-						   puppiw,
-						   lt_features,
-						   flip_,
-						   distminpfcandsv);
-	  }
-	}
+          if (PackedCandidate_) {
+            if (PackedCandidate_->hasTrackDetails()) {
+              const reco::Track& PseudoTrack = PackedCandidate_->pseudoTrack();
+              reco::TransientTrack transientTrack;
+              transientTrack = track_builder->build(PseudoTrack);
+              distminpfcandsv = btagbtvdeep::mindistsvpfcand(svs_unsorted, transientTrack);
+            }
+
+            btagbtvdeep::packedCandidateToFeatures(PackedCandidate_,
+                                                   jet,
+                                                   trackinfo,
+                                                   is_weighted_jet_,
+                                                   drminpfcandsv,
+                                                   static_cast<float>(jet_radius_),
+                                                   puppiw,
+                                                   lt_features,
+                                                   flip_,
+                                                   distminpfcandsv);
+          }
+        }
       }
 
       // fill collection, from DeepTNtuples plus some styling
