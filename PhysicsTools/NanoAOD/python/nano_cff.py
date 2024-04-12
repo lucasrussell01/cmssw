@@ -143,8 +143,7 @@ def nanoAOD_addUTagToTaus(process, addUTagInfo=False, runUTagAK4=False,
     if addUTagInfo:
         originalTauName = process.finalTaus.src.value()
         
-        if usePUPPIjets: # option to use PUPPI jets  
-            print("DEBUG: PUPPI jets being used ********") 
+        if usePUPPIjets: # option to use PUPPI jets
             jetCollection = "updatedJetsPuppi"
             TagName = "pfUnifiedParticleTransformerAK4JetTag"
             tag_prefix = "byUTagPUPPI"
@@ -153,7 +152,6 @@ def nanoAOD_addUTagToTaus(process, addUTagInfo=False, runUTagAK4=False,
             from RecoBTag.ONNXRuntime.pfUnifiedParticleTransformerAK4JetTags_cfi import pfUnifiedParticleTransformerAK4JetTags
             process.pfUnifiedParticleTransformerAK4JetTags = pfUnifiedParticleTransformerAK4JetTags.clone()
         else: # use CHS jets by default
-            print("DEBUG: CHS jets being used ********")
             jetCollection = "updatedJets"
             TagName = "pfParticleNetFromMiniAODAK4CHSCentralJetTag"
             tag_prefix = "byUTagCHS"
