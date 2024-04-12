@@ -256,14 +256,27 @@ void PATTauHybridProducer::produce(edm::Event& evt, const edm::EventSetup& es) {
       float dR2 = deltaR2(jet, inputTau);
       // select 1st found match rather than best match (both should be equivalent for reasonable dRMax)
       if (dR2 < dR2Max_) {
+        std::cout << tagPrefix_ << " Jet Matched to Tau with [ pT: "  << inputTau.pt() << " eta: " << inputTau.eta() << " phi: " << inputTau.phi() << " ] matched to jet with [ pT: " << jet.correctedP4("Uncorrected").pt() << " eta: " << jet.correctedP4("Uncorrected").eta() << " phi: " << jet.correctedP4("Uncorrected").phi() << " ]" << std::endl;
         matched_taus.insert(tau_idx - 1);
         pat::Tau outputTau(inputTau);
         const size_t nTauIds = inputTau.tauIDs().size();
         std::vector<pat::Tau::IdPair> tauIds(nTauIds + tauIds_utag.size());
         for (size_t i = 0; i < nTauIds; ++i)
           tauIds[i] = inputTau.tauIDs()[i];
-        for (size_t i = 0; i < tauIds_utag.size(); ++i)
-          tauIds[nTauIds + i] = tauIds_utag[i];
+        for (size_t i = 0; i < tauIds_utag.size(); ++i){
+          if ((tauIds_utag[i].first.find("PtCorr") != std::string::npos) && (inputTau.tauID("decayModeFindingNewDMs") == -1)){
+            // not an HPS tau, need to modify ptcorr
+            std::cout << "-----------------------------------------" << std::endl;
+            std::cout << "FOUND a NON HPS Tau - Original PtCorr: " << tauIds_utag[i].first << " " << tauIds_utag[i].second << std::endl;
+            std::cout << "Tau pT: " << inputTau.pt() << " Jet pT: " << jet.correctedP4("Uncorrected").pt() << std::endl;
+            std::cout << "Correction Factor: " << jet.correctedP4("Uncorrected").pt()/inputTau.pt() << std::endl;
+            std::cout << "-----------------------------------------" << std::endl;
+            tauIds[nTauIds + i] = tauIds_utag[i];
+            }
+          else{
+            tauIds[nTauIds + i] = tauIds_utag[i];
+          }
+        }
         outputTau.setTauIDs(tauIds);
         matched = true;
         outputTaus->push_back(outputTau);
