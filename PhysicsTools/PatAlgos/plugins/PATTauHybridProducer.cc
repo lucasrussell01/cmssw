@@ -232,8 +232,8 @@ void PATTauHybridProducer::produce(edm::Event& evt, const edm::EventSetup& es) {
       float dR2 = deltaR2(jet, inputTau);
       // select 1st found match rather than best match (both should be equivalent for reasonable dRMax)
       if (dR2 < dR2Max_) {
-        std::cout << tagPrefix_ << ": Jet Matched to Tau with [ pT: "  << inputTau.pt() << " eta: " << inputTau.eta() << " phi: " << inputTau.phi() << " ] matched to jet with [ pT: " << jet.correctedP4("Uncorrected").pt() << " eta: " << jet.correctedP4("Uncorrected").eta() << " phi: " << jet.correctedP4("Uncorrected").phi() << " ]" << std::endl;
-        std::cout << "Neutral hadron energy fraction: " << jet.neutralHadronEnergyFraction() << " corrected pT: " << jet.pt() << std::endl;
+        // std::cout << tagPrefix_ << ": Jet Matched to Tau with [ pT: "  << inputTau.pt() << " eta: " << inputTau.eta() << " phi: " << inputTau.phi() << " ] matched to jet with [ pT: " << jet.correctedP4("Uncorrected").pt() << " eta: " << jet.correctedP4("Uncorrected").eta() << " phi: " << jet.correctedP4("Uncorrected").phi() << " ]" << std::endl;
+        // std::cout << "Neutral hadron energy fraction: " << jet.neutralHadronEnergyFraction() << " corrected pT: " << jet.pt() << std::endl;
         matched_taus.insert(tau_idx - 1);
         pat::Tau outputTau(inputTau);
         const size_t nTauIds = inputTau.tauIDs().size();

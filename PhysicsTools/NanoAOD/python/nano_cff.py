@@ -223,7 +223,7 @@ def nanoAOD_customizeCommon(process):
     process = nanoAOD_addDeepInfoAK4(process,
         addParticleNet=nanoAOD_addDeepInfoAK4_switch.nanoAOD_addParticleNet_switch,
         addRobustParTAK4=nanoAOD_addDeepInfoAK4_switch.nanoAOD_addRobustParTAK4Tag_switch,
-        addUnifiedParTAK4=nanoAOD_addDeepInfoAK4_switch.nanoAOD_addUnifiedParTAK4Tag_switch
+        addUnifiedParTAK4=True # TODO: adding this here for testing 
     )
 
     # This function is defined in jetsAK4_CHS_cff.py
